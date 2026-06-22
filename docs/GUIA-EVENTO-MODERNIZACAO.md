@@ -762,7 +762,11 @@ Portal → `vnet-prd-inf-cin-001` → **Subnets** → **+ Subnet**:
 #### 8.6 VNet Integration da API → SQL privado (e desligar o público do SQL)
 
 1. `app-prd-tk-bend-cin-001` → **Networking → Outbound → VNet integration → Add** → `snet-prd-inf-appsvc-cin-001` · garanta **Route All** (`WEBSITE_VNET_ROUTE_ALL=1`).
-2. Valide: `Invoke-RestMethod "$BEND/api/health/db"` → **connected** (agora via IP privado).
+2. **Valide a resolução privada ANTES de desligar o público** — no **Kudu** do backend (`https://app-prd-tk-bend-cin-001.scm.azurewebsites.net/DebugConsole`), use as ferramentas internas do App Service:
+   - **DNS:** `nameresolver sql-prd-tk-cin-001.database.windows.net` → deve resolver para **IP privado (`10.x`)** (e/ou o CNAME `...privatelink.database.windows.net`). **IP público** = falta **Route All** ou a **zona DNS privada linkada à VNet**.
+   - **Porta:** `tcpping sql-prd-tk-cin-001.database.windows.net:1433` → deve **conectar** (alcança o SQL pela 1433).
+   - **App:** `Invoke-RestMethod "$BEND/api/health/db"` → **connected** (agora via IP privado).
+   > ⚠️ **Não use `ping`** no App Service — o sandbox **bloqueia ICMP** (o erro "Unable to contact IP driver. General failure." é esperado, não é falha de rede). Use `nameresolver` (DNS) e `tcpping` (porta).
 3. **Agora sim:** `sql-prd-tk-cin-001` → **Networking → Public access → Disable** → **Save**.
 4. **Revalide** `/api/health/db` → continua connected. 🎉 Banco privado.
 
