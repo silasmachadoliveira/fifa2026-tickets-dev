@@ -19,7 +19,7 @@ export interface Match {
 
 export const phaseLabels: Record<MatchPhase, string> = {
   'group': 'Fase de Grupos',
-  'round32': '32-avos de Final',
+  'round32': '16 avos',
   'round16': 'Oitavas de Final',
   'quarterfinals': 'Quartas de Final',
   'semifinals': 'Semifinais',

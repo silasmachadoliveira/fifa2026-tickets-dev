@@ -59,7 +59,7 @@ env:
   DOTNET_VERSION: '8.0.x'
   # --- frontend ---
   FRONTEND_WORKING_DIR: 'Lovable/World Cup Tickets Hub'
-  NODE_VERSION: '20'
+  NODE_VERSION: '24'
 
 jobs:
   lab:

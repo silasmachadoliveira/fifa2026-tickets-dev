@@ -26,7 +26,7 @@ interface ApiMatch {
 const STAGE_LABELS: Record<string, string> = {
   'Fase de Grupos': 'Fase de Grupos',
   group: 'Fase de Grupos',
-  round_of_32: '32 avos de Final',
+  round_of_32: '16 avos de Final',
   round_of_16: 'Oitavas de Final',
   quarter_final: 'Quartas de Final',
   semi_final: 'Semifinal',
@@ -36,7 +36,7 @@ const STAGE_LABELS: Record<string, string> = {
 
 function formatDateBR(dateIso: string): string {
   if (!dateIso) return '-';
-  const d = new Date(dateIso);
+  const [y, m, day] = dateIso.slice(0, 10).split("-"); const d = new Date(+y, +m - 1, +day);
   return d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
 }
 

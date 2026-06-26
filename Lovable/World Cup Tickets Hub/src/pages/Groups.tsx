@@ -30,7 +30,7 @@ interface ApiMatch {
 
 function formatDateBR(dateIso: string): string {
   if (!dateIso) return '-';
-  const d = new Date(dateIso);
+  const [y, m, day] = dateIso.slice(0, 10).split("-"); const d = new Date(+y, +m - 1, +day);
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 }
 

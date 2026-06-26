@@ -412,7 +412,7 @@ const AdminSales: React.FC = () => {
                     {selectedSale.stadium_name} - {selectedSale.stadium_city}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {selectedSale.match_date ? new Date(selectedSale.match_date).toLocaleDateString('pt-BR') : '-'} às {selectedSale.match_time}
+                    {selectedSale.match_date ? new Date(selectedSale.match_date.slice(0,10) + "T12:00:00").toLocaleDateString('pt-BR') : '-'} às {selectedSale.match_time}
                   </p>
                 </div>
               </div>
