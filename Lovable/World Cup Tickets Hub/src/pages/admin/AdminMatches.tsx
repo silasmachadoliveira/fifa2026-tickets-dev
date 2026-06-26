@@ -84,7 +84,7 @@ interface Stadium {
 
 const phaseLabels: Record<string, string> = {
   group: 'Fase de Grupos',
-  round_of_32: 'Oitavas de Final',
+  round_of_32: '16 avos',
   round_of_16: 'Oitavas de Final',
   quarter_final: 'Quartas de Final',
   semi_final: 'Semifinal',
@@ -411,7 +411,7 @@ const AdminMatches: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium">{match.date ? new Date(match.date).toLocaleDateString('pt-BR') : '-'}</p>
+                      <p className="font-medium">{match.date ? new Date(match.date.slice(0,10) + "T12:00:00").toLocaleDateString('pt-BR') : '-'}</p>
                       <p className="text-sm text-muted-foreground">{match.time}</p>
                     </div>
                   </div>

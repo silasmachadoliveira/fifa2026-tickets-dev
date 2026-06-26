@@ -176,7 +176,7 @@ const Standings: React.FC = () => {
         <Tabs value={tab} onValueChange={setTab} className="w-full">
           <TabsList className="grid grid-cols-4 sm:grid-cols-7 gap-1 max-w-3xl mx-auto mb-8 h-auto">
             <TabsTrigger value="groups">Grupos</TabsTrigger>
-            <TabsTrigger value="r32">32 avos</TabsTrigger>
+            <TabsTrigger value="r32">16 avos</TabsTrigger>
             <TabsTrigger value="r16">Oitavas</TabsTrigger>
             <TabsTrigger value="qf">Quartas</TabsTrigger>
             <TabsTrigger value="sf">Semis</TabsTrigger>

@@ -190,7 +190,7 @@ const Profile: React.FC = () => {
                           </div>
                           <p className="text-sm text-muted-foreground">{ticket.stadium_name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(ticket.match_date).toLocaleDateString('pt-BR')} • {ticket.match_time}
+                            {new Date(ticket.match_date.slice(0,10) + "T12:00:00").toLocaleDateString('pt-BR')} • {ticket.match_time}
                           </p>
                           <p className="text-sm text-primary mt-1">{ticket.category} - {ticket.quantity}x ingressos</p>
                         </div>
