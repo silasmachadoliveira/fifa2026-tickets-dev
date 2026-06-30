@@ -119,6 +119,8 @@ const AdminMatches: React.FC = () => {
     group_name: '',
     home_score: '',
     away_score: '',
+    home_penalties: '',
+    away_penalties: '',
     status: 'scheduled',
   });
 
@@ -166,6 +168,8 @@ const AdminMatches: React.FC = () => {
       group_name: match.group_name || '',
       home_score: match.home_score?.toString() || '',
       away_score: match.away_score?.toString() || '',
+      home_penalties: match.home_penalties?.toString() || '',
+      away_penalties: match.away_penalties?.toString() || '',
       status: match.status || 'scheduled',
     });
     setIsDialogOpen(true);
@@ -183,6 +187,8 @@ const AdminMatches: React.FC = () => {
       group_name: '',
       home_score: '',
       away_score: '',
+      home_penalties: '',
+      away_penalties: '',
       status: 'scheduled',
     });
     setIsDialogOpen(true);
@@ -206,6 +212,8 @@ const AdminMatches: React.FC = () => {
         group_name: formData.group_name || undefined,
         home_score: formData.home_score ? parseInt(formData.home_score) : undefined,
         away_score: formData.away_score ? parseInt(formData.away_score) : undefined,
+        home_penalties: formData.home_penalties ? parseInt(formData.home_penalties) : undefined,
+        away_penalties: formData.away_penalties ? parseInt(formData.away_penalties) : undefined,
         status: formData.status,
       };
 
@@ -561,6 +569,19 @@ const AdminMatches: React.FC = () => {
                   <Label>Placar Visitante</Label>
                   <Input type="number" value={formData.away_score} onChange={(e) => setFormData({ ...formData, away_score: e.target.value })} />
                 </div>
+                {/* Pênaltis - aparece quando é mata-mata */}
+                {formData.stage && formData.stage !== 'Fase de Grupos' && formData.home_score && formData.away_score && formData.home_score === formData.away_score && (
+                  <>
+                    <div className="space-y-2">
+                      <Label>Pênaltis Casa</Label>
+                      <Input type="number" min="0" value={formData.home_penalties} onChange={(e) => setFormData({ ...formData, home_penalties: e.target.value })} placeholder="Ex: 3" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Pênaltis Visitante</Label>
+                      <Input type="number" min="0" value={formData.away_penalties} onChange={(e) => setFormData({ ...formData, away_penalties: e.target.value })} placeholder="Ex: 4" />
+                    </div>
+                  </>
+                )}
                 <div className="space-y-2">
                   <Label>Status</Label>
                   <Select value={formData.status} onValueChange={(v) => setFormData({ ...formData, status: v })}>
