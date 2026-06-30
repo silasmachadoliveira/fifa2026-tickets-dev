@@ -106,7 +106,7 @@ const AdminMatches: React.FC = () => {
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [closingMatch, setClosingMatch] = useState<Match | null>(null);
-  const [closingScore, setClosingScore] = useState({ home: '', away: '' });
+  const [closingScore, setClosingScore] = useState({ home: '', away: '', homePen: '', awayPen: '' });
   const { toast } = useToast();
 
   const [formData, setFormData] = useState({
