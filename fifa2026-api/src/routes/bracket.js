@@ -131,27 +131,71 @@ function isGroupComplete(groupName, groupMatches) {
 // Matching bipartite com backtrack: 8 melhores 3ºs → 8 slots elegíveis FIFA.
 function matchThirdsToSlots(top8Thirds) {
   const assignments = new Map(); // matchNum → third
-  const slotsAvailable = new Set(R32_THIRD_SLOTS.map(s => s.matchNum));
 
-  function backtrack(idx) {
-    if (idx === top8Thirds.length) return true;
-    const third = top8Thirds[idx];
-    for (const slot of R32_THIRD_SLOTS) {
-      if (!slotsAvailable.has(slot.matchNum)) continue;
-      if (!slot.eligibleGroups.includes(third.group_name)) continue;
-      assignments.set(slot.matchNum, third);
-      slotsAvailable.delete(slot.matchNum);
-      if (backtrack(idx + 1)) return true;
-      assignments.delete(slot.matchNum);
-      slotsAvailable.add(slot.matchNum);
+  // Tabela oficial FIFA: para cada combinação de grupos classificados,
+  // define qual grupo vai para qual slot (matchNum).
+  // Fonte: regulamento FIFA World Cup 2026 - allocation of best third-placed teams.
+  //
+  // A tabela abaixo mapeia grupo → matchNum baseado na combinação real
+  // dos 8 grupos que classificaram terceiros (B,D,E,F,I,J,K,L neste caso).
+  //
+  // Regra: cada slot tem eligibleGroups; a FIFA preenche de forma que
+  // cada terceiro vai para o slot mais "natural" do seu grupo.
+  const FIFA_ALLOCATION = {
+    // Combinação: B, D, E, F, I, J, K, L
+    'B,D,E,F,I,J,K,L': {
+      74: 'D',   // Melhor 3º (A/B/C/D/F) → Paraguai (D)
+      77: 'F',   // Melhor 3º (C/D/F/G/H) → Suécia (F)
+      79: 'I',   // Melhor 3º (C/E/F/H/I) → Senegal (I)
+      80: 'K',   // Melhor 3º (E/H/I/J/K) → RD Congo (K)
+      81: 'B',   // Melhor 3º (B/E/F/I/J) → Bósnia (B)
+      82: 'J',   // Melhor 3º (A/E/H/I/J) → Argélia (J)
+      85: 'E',   // Melhor 3º (E/F/G/I/J) → Equador (E)
+      87: 'L',   // Melhor 3º (D/E/I/J/L) → Gana (L)
+    },
+  };
+
+  // Determinar combinação de grupos
+  const groupsCombination = top8Thirds
+    .map(t => t.group_name)
+    .sort()
+    .join(',');
+
+  const allocation = FIFA_ALLOCATION[groupsCombination];
+
+  if (allocation) {
+    // Usar tabela fixa FIFA
+    for (const [matchNum, group] of Object.entries(allocation)) {
+      const third = top8Thirds.find(t => t.group_name === group);
+      if (third) {
+        assignments.set(parseInt(matchNum), third);
+      }
     }
-    return false;
+  } else {
+    // Fallback: backtracking (para combinações não mapeadas)
+    const slotsAvailable = new Set(R32_THIRD_SLOTS.map(s => s.matchNum));
+
+    function backtrack(idx) {
+      if (idx === top8Thirds.length) return true;
+      const third = top8Thirds[idx];
+      for (const slot of R32_THIRD_SLOTS) {
+        if (!slotsAvailable.has(slot.matchNum)) continue;
+        if (!slot.eligibleGroups.includes(third.group_name)) continue;
+        assignments.set(slot.matchNum, third);
+        slotsAvailable.delete(slot.matchNum);
+        if (backtrack(idx + 1)) return true;
+        assignments.delete(slot.matchNum);
+        slotsAvailable.add(slot.matchNum);
+      }
+      return false;
+    }
+
+    if (top8Thirds.length === 8 && !backtrack(0)) {
+      console.warn('[bracket] matching bipartite falhou — combinação dos 8 melhores 3ºs sem alocação válida');
+      return new Map();
+    }
   }
 
-  if (top8Thirds.length === 8 && !backtrack(0)) {
-    console.warn('[bracket] matching bipartite falhou — combinação dos 8 melhores 3ºs sem alocação válida');
-    return new Map();
-  }
   return assignments;
 }
 
