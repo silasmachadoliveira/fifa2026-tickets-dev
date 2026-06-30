@@ -146,11 +146,11 @@ function matchThirdsToSlots(top8Thirds) {
     'B,D,E,F,I,J,K,L': {
       74: 'D',   // Melhor 3º (A/B/C/D/F) → Paraguai (D)
       77: 'F',   // Melhor 3º (C/D/F/G/H) → Suécia (F)
-      79: 'I',   // Melhor 3º (C/E/F/H/I) → Senegal (I)
+      79: 'E',   // Melhor 3º (C/E/F/H/I) → Equador (E)
       80: 'K',   // Melhor 3º (E/H/I/J/K) → RD Congo (K)
       81: 'B',   // Melhor 3º (B/E/F/I/J) → Bósnia (B)
-      82: 'J',   // Melhor 3º (A/E/H/I/J) → Argélia (J)
-      85: 'E',   // Melhor 3º (E/F/G/I/J) → Equador (E)
+      82: 'I',   // Melhor 3º (A/E/H/I/J) → Senegal (I)
+      85: 'J',   // Melhor 3º (E/F/G/I/J) → Argélia (J)
       87: 'L',   // Melhor 3º (D/E/I/J/L) → Gana (L)
     },
   };
@@ -203,7 +203,16 @@ function matchThirdsToSlots(top8Thirds) {
 // de desempate (penalties) — admin precisa colocar placar diferente.
 function pickWinnerLoser(match, knockoutTeamMap) {
   if (match.status !== 'finished' || match.home_score === null || match.away_score === null) return null;
-  if (match.home_score === match.away_score) return null; // empate sem suporte
+  if (match.home_score === match.away_score) {
+    if (match.home_penalties != null && match.away_penalties != null && match.home_penalties !== match.away_penalties) {
+      const home = knockoutTeamMap.get(match.home_team_id);
+      const away = knockoutTeamMap.get(match.away_team_id);
+      if (!home || !away) return null;
+      if (match.home_penalties > match.away_penalties) return { winner: home, loser: away };
+      return { winner: away, loser: home };
+    }
+    return null;
+  }
   const home = knockoutTeamMap.get(match.home_team_id);
   const away = knockoutTeamMap.get(match.away_team_id);
   if (!home || !away) return null;
@@ -227,7 +236,7 @@ router.get('/', async (req, res) => {
 
     const matchesRes = await query(`
       SELECT m.id, m.home_team_id, m.away_team_id, m.group_name, m.stage,
-             m.home_score, m.away_score, m.status,
+             m.home_score, m.away_score, m.home_penalties, m.away_penalties, m.status,
              CONVERT(varchar(10), m.date, 23) AS match_date,
              CONVERT(varchar(5), m.time, 108) AS time,
              s.name AS stadium_name,
