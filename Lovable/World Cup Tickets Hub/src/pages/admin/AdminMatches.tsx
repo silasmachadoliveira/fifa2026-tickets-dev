@@ -59,6 +59,8 @@ interface Match {
   stadium_id: number;
   home_score: number | null;
   away_score: number | null;
+  home_penalties: number | null;
+  away_penalties: number | null;
   status: string;
   home_team_name: string;
   home_team_code: string;
@@ -233,6 +235,8 @@ const AdminMatches: React.FC = () => {
     setClosingScore({
       home: match.home_score?.toString() || '',
       away: match.away_score?.toString() || '',
+      homePen: match.home_penalties?.toString() || '',
+      awayPen: match.away_penalties?.toString() || '',
     });
   };
 
@@ -256,6 +260,8 @@ const AdminMatches: React.FC = () => {
         group_name: closingMatch.group_name || undefined,
         home_score: home,
         away_score: away,
+        home_penalties: closingScore.homePen ? parseInt(closingScore.homePen) : undefined,
+        away_penalties: closingScore.awayPen ? parseInt(closingScore.awayPen) : undefined,
         status: 'finished',
       });
       if (result.error) {
@@ -612,6 +618,34 @@ const AdminMatches: React.FC = () => {
                   />
                 </div>
               </div>
+              {/* Pênaltis - só aparece em mata-mata quando placar é empate */}
+              {closingMatch.stage !== 'Fase de Grupos' && closingScore.home === closingScore.away && closingScore.home !== '' && (
+                <div className="space-y-2">
+                  <Label className="text-center block text-sm font-medium">Pênaltis (disputa)</Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <Label className="text-xs">{closingMatch.home_team_code} (pen)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={closingScore.homePen || ''}
+                        onChange={(e) => setClosingScore({ ...closingScore, homePen: e.target.value })}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs">{closingMatch.away_team_code} (pen)</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={closingScore.awayPen || ''}
+                        onChange={(e) => setClosingScore({ ...closingScore, awayPen: e.target.value })}
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex gap-2 justify-end pt-2">
                 <Button variant="outline" onClick={() => setClosingMatch(null)} disabled={saving}>
                   Cancelar
