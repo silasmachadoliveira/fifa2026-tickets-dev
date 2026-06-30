@@ -388,7 +388,7 @@ class ApiClient {
     });
   }
 
-  async updateMatch(id: number, data: { home_team_id: number; away_team_id: number; stadium_id: number; date: string; time: string; stage: string; group_name?: string; home_score?: number; away_score?: number; status?: string }) {
+  async updateMatch(id: number, data: { home_team_id: number; away_team_id: number; stadium_id: number; date: string; time: string; stage: string; group_name?: string; home_score?: number; away_score?: number; home_penalties?: number; away_penalties?: number; status?: string }) {
     return this.request<{ match: Match; message: string }>(`/matches/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),

@@ -126,7 +126,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 // PUT /api/matches/:id - Atualizar jogo (Admin)
 router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { home_team_id, away_team_id, stadium_id, date, time, stage, group_name, home_score, away_score, status } = req.body;
+    const { home_team_id, away_team_id, stadium_id, date, time, stage, group_name, home_score, away_score, home_penalties, away_penalties, status } = req.body;
 
     const pool = await getConnection();
     const result = await pool.request()
@@ -140,12 +140,15 @@ router.put('/:id', authMiddleware, adminMiddleware, async (req, res) => {
       .input('group_name', sql.VarChar, group_name || null)
       .input('home_score', sql.Int, home_score)
       .input('away_score', sql.Int, away_score)
+      .input('home_penalties', sql.Int, home_penalties != null ? home_penalties : null)
+      .input('away_penalties', sql.Int, away_penalties != null ? away_penalties : null)
       .input('status', sql.VarChar, status || 'scheduled')
       .query(`
         UPDATE matches 
         SET home_team_id = @home_team_id, away_team_id = @away_team_id, stadium_id = @stadium_id,
             date = @date, time = @time, stage = @stage, group_name = @group_name,
-            home_score = @home_score, away_score = @away_score, status = @status
+            home_score = @home_score, away_score = @away_score,
+            home_penalties = @home_penalties, away_penalties = @away_penalties, status = @status
         OUTPUT INSERTED.*
         WHERE id = @id
       `);
