@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
       SELECT 
         m.id, m.date, m.time, m.stage, m.group_name,
         m.home_team_id, m.away_team_id, m.stadium_id,
-        m.home_score, m.away_score, m.status,
+        m.home_score, m.away_score, m.home_penalties, m.away_penalties, m.status,
         ht.name as home_team_name, ht.code as home_team_code, ht.flag as home_team_flag,
         at.name as away_team_name, at.code as away_team_code, at.flag as away_team_flag,
         s.name as stadium_name, s.city as stadium_city
